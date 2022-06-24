@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/FarmerChillax/hexo-alios/vars"
+	"github.com/FarmerChillax/hexo-alioss/vars"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 

@@ -1,4 +1,4 @@
-module github.com/FarmerChillax/hexo-alios
+module github.com/FarmerChillax/hexo-alioss
 
 go 1.18
 

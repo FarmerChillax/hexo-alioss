@@ -5,8 +5,8 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/FarmerChillax/hexo-alios/pkg"
-	"github.com/FarmerChillax/hexo-alios/vars"
+	"github.com/FarmerChillax/hexo-alioss/pkg"
+	"github.com/FarmerChillax/hexo-alioss/vars"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/fatih/color"
 )
