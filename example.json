@@ -1,0 +1,7 @@
+{
+    "endpoint": "oss-cn-shenzhen.aliyuncs.com",
+    "ak": "YourAccessKey",
+    "aks": "YourAccessKeySecret",
+    "bucket": "YourBucketName",
+    "root": "上传目录路径"
+}

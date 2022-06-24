@@ -23,7 +23,7 @@ func init() {
 	viper.AddConfigPath(".")    // 设置配置文件和可执行二进制文件在用一个目录
 	err := viper.ReadInConfig() // 根据以上配置读取加载配置文件
 	if err != nil {
-		log.Fatalf("读取配置文件出错: %v", err)
+		log.Fatalf("读取配置文件出错: %v, 请参考 example.json 配置了 config.json 文件", err)
 	}
 	AliOssConfig = &OssConfig{
 		Endpoint:        viper.GetString("endpoint"),
