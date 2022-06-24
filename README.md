@@ -9,7 +9,7 @@ go >= 1.16
 ## 使用方法
 
 1. 通过 release 下载二进制文件或下载源码编译
-2. 参考 `example.json` 或下面的配置来配置你自己的 `config.json`
+2. 参考 `example.json` 或下面的示例来配置你自己的 `config.json`
 
 ```json
 {
