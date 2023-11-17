@@ -31,7 +31,7 @@ LDFLAGS := -s -w
 
 os-archs=darwin:amd64 darwin:arm64 freebsd:386 freebsd:amd64 linux:386 linux:amd64 linux:arm linux:arm64 windows:386 windows:amd64 linux:mips64 linux:mips64le linux:mips:softfloat linux:mipsle:softfloat linux:riscv64
 
-version =  v0.2.0
+version =  v0.2.1
 
 all: build
 
@@ -45,6 +45,7 @@ app:
 		target_suffix=$${os}_$${arch};\
 		echo "Build $${os}-$${arch}...";\
 		env CGO_ENABLED=0 GOOS=$${os} GOARCH=$${arch} GOMIPS=$${gomips} go build -trimpath -ldflags "$(LDFLAGS)" -o ./release/"$(version)"/bin/hexo_ali_oss_"$(version)"_$${target_suffix} ;\
-		tar -c ./release/"$(version)"/bin/hexo_ali_oss_"$(version)"_$${target_suffix} -f ./release/"$(version)"/hexo_ali_oss_"$(version)"_$${target_suffix}.tar \
 		echo "Build $${os}-$${arch} done";\
 	)
+
+# # tar -c ./release/"$(version)"/bin/hexo_ali_oss_"$(version)"_$${target_suffix} -f ./release/"$(version)"/hexo_ali_oss_"$(version)"_$${target_suffix}.tar \

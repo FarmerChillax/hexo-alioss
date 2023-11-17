@@ -24,12 +24,19 @@ func UploadFloder(bucket *oss.Bucket, rootPath string) {
 			logrus.Errorf("filepath.Rel err: %v", err)
 			return err
 		}
+
 		fileMD5 := pkg.GetMD5(path)
 		h, err := bucket.GetObjectMeta(objKey)
 		if err != nil {
-			logrus.Errorf("bucket.GetObjectMeta err: %v, objKey: %s", err, objKey)
-			return err
+			ossErr, ok := err.(oss.ServiceError)
+			if ok && ossErr.StatusCode == 404 {
+				logrus.Infof("tea err: %#v", ossErr)
+			} else {
+				logrus.Errorf("bucket.GetObjectMeta err: %v, objKey: %s", err, objKey)
+				return err
+			}
 		}
+
 		if h.Get("Etag") == fmt.Sprintf("\"%s\"", fileMD5) {
 			logrus.Infof("%s was uploaded, done.", objKey)
 			return nil
