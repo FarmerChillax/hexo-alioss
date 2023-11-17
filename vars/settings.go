@@ -2,6 +2,7 @@ package vars
 
 import (
 	"log"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
@@ -11,7 +12,7 @@ type OssConfig struct {
 	AccessKey       string
 	AccessKeySecret string
 	Bucket          string
-	Root            string
+	Path            string
 }
 
 var AliOssConfig *OssConfig
@@ -25,12 +26,13 @@ func init() {
 	if err != nil {
 		log.Fatalf("读取配置文件出错: %v, 请参考 example.json 配置了 config.json 文件", err)
 	}
+
 	AliOssConfig = &OssConfig{
 		Endpoint:        viper.GetString("endpoint"),
 		AccessKey:       viper.GetString("ak"),
 		AccessKeySecret: viper.GetString("aks"),
 		Bucket:          viper.GetString("bucket"),
-		Root:            viper.GetString("root"),
+		Path:            filepath.Join(viper.GetString("path"), "public"),
 	}
 	// fmt.Println("获取配置文件的string", viper.GetString(`app.name`))
 	// fmt.Println("获取配置文件的string", viper.GetInt(`app.foo`))

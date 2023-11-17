@@ -3,5 +3,5 @@
     "ak": "YourAccessKey",
     "aks": "YourAccessKeySecret",
     "bucket": "YourBucketName",
-    "root": "上传目录路径"
+    "path": "博客根目录"
 }
