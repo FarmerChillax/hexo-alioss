@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -12,8 +13,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func UploadFloder(bucket *oss.Bucket, rootPath string) {
+type UploadFileItem struct {
+	ObjectKey string
+	FilePath  string
+}
+
+func UploadFloder(bucket *oss.Bucket, rootPath string, filePathChan chan<- *UploadFileItem) {
 	filepath.WalkDir(rootPath, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
 		if d.IsDir() {
 			return nil
 		}
@@ -30,7 +39,7 @@ func UploadFloder(bucket *oss.Bucket, rootPath string) {
 		if err != nil {
 			ossErr, ok := err.(oss.ServiceError)
 			if ok && ossErr.StatusCode == 404 {
-				logrus.Infof("tea err: %#v", ossErr)
+				logrus.Infof("upload a new file: %s", objKey)
 			} else {
 				logrus.Errorf("bucket.GetObjectMeta err: %v, objKey: %s", err, objKey)
 				return err
@@ -42,15 +51,35 @@ func UploadFloder(bucket *oss.Bucket, rootPath string) {
 			return nil
 		}
 
-		err = bucket.PutObjectFromFile(objKey, path)
-		if err != nil {
-			color.Red("Upload %s err: %v\n", path, err)
-			logrus.Errorf("Upload err: %v", err)
-			return err
+		filePathChan <- &UploadFileItem{
+			ObjectKey: objKey,
+			FilePath:  path,
 		}
-		color.Green("Upload %s success.\n", path)
 		return nil
 	})
+}
+
+func OSSUploader(ctx context.Context, bucket *oss.Bucket, filePathChan <-chan *UploadFileItem) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case item, ok := <-filePathChan:
+			if !ok {
+				logrus.Infof("filePathChan is closed.")
+				return
+			}
+			objKey := item.ObjectKey
+			path := item.FilePath
+			err := bucket.PutObjectFromFile(objKey, path)
+			if err != nil {
+				color.Red("Upload %s err: %v\n", path, err)
+				logrus.Errorf("Upload err: %v", err)
+			} else {
+				color.Green("Upload %s success.\n", path)
+			}
+		}
+	}
 }
 
 func main() {
@@ -59,5 +88,11 @@ func main() {
 	ossClient := pkg.GetOssClient()
 	bucket := pkg.GetBucket(ossClient, vars.AliOssConfig.Bucket)
 
-	UploadFloder(bucket, vars.AliOssConfig.Path)
+	filePathChan := make(chan *UploadFileItem, 8)
+
+	for i := 0; i < cap(filePathChan); i++ {
+		go OSSUploader(context.Background(), bucket, filePathChan)
+	}
+
+	UploadFloder(bucket, vars.AliOssConfig.Path, filePathChan)
 }
