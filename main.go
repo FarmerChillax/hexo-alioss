@@ -13,6 +13,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+var Version = "v0.2.4"
+
 type UploadFileItem struct {
 	ObjectKey string
 	FilePath  string
@@ -83,6 +85,7 @@ func OSSUploader(ctx context.Context, bucket *oss.Bucket, filePathChan <-chan *U
 }
 
 func main() {
+	color.Green("hexo-alioss cli Version: %v", Version)
 	color.Yellow("OSS Go SDK Version: %v", oss.Version)
 	// 初始化客户端
 	ossClient := pkg.GetOssClient()
